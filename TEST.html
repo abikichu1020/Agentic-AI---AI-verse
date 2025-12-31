@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Agentic AI Career Copilot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #8b5cf6;
+    --accent: #a5b4fc;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --sidebar-bg: #020617;
+    --border: #334155;
+    --text: #f8fafc;
+    --text-muted: #94a3b8;
+    --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    padding: 30px 20px;
+    position: fixed;
+    height: 100vh;
+    z-index: 100;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 40px;
+    padding: 0 10px;
+}
+
+.logo-icon {
+    background: var(--gradient);
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+}
+
+.logo-text {
+    font-weight: 700;
+    font-size: 22px;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-muted);
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+
+.nav-item:hover {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--accent);
+    border-color: var(--border);
+}
+
+.nav-item.active {
+    background: var(--gradient);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+}
+
+.nav-item i {
+    width: 24px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.user-profile {
+    position: absolute;
+    bottom: 30px;
+    left: 20px;
+    right: 20px;
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: white;
+    font-size: 18px;
+}
+
+.user-info h4 {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.user-info p {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* Main Content */
+.main {
+    flex: 1;
+    margin-left: 280px;
+    padding: 30px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.header p {
+    color: var(--text-muted);
+    margin-top: 5px;
+    font-size: 16px;
+}
+
+.header-controls {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 18px;
+}
+
+.btn-icon:hover {
+    background: var(--gradient);
+    border-color: var(--primary);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+}
+
+/* Sections - Initially hidden */
+.section {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.section.active {
+    display: block;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-title i {
+    color: var(--accent);
+}
+
+/* Grid Layouts */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 25px;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.card:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 25px;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: var(--gradient);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: rgba(99, 102, 241, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--accent);
+    margin-bottom: 20px;
+}
+
+.stat-value {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.stat-change {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 15px;
+}
+
+.positive {
+    color: var(--success);
+}
+
+.negative {
+    color: var(--danger);
+}
+
+/* Progress Bars */
+.progress-container {
+    margin: 20px 0;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.progress-bar {
+    height: 10px;
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient);
+    border-radius: 10px;
+    transition: width 1.5s ease-in-out;
+}
+
+/* Tags */
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.tag {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.tag:hover {
+    transform: translateY(-2px);
+}
+
+.tag-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: var(--warning);
+    color: var(--warning);
+}
+
+.tag-danger {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.tag-success {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--success);
+    color: var(--success);
+}
+
+/* Chat */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+}
+
+.chatbox {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background: rgba(30, 41, 59, 0.3);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message {
+    max-width: 80%;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.message-user {
+    align-self: flex-end;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid var(--accent);
+}
+
+.message-ai {
+    align-self: flex-start;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid var(--border);
+}
+
+.message-header {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.message-user .message-header {
+    color: var(--accent);
+}
+
+.message-ai .message-header {
+    color: var(--success);
+}
+
+.chat-input {
+    display: flex;
+    gap: 15px;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 15px 20px;
+    border-radius: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.chat-input input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.chat-input button {
+    padding: 0 30px;
+    border-radius: 12px;
+    border: none;
+    background: var(--gradient);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-input button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+}
+
+/* Roadmap */
+.roadmap {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.roadmap-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.roadmap-item:hover {
+    border-color: var(--accent);
+    transform: translateX(5px);
+}
+
+.roadmap-week {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 20px;
+    color: white;
+    flex-shrink: 0;
+}
+
+.roadmap-content h4 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: var(--text);
+}
+
+.roadmap-content p {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* Match Indicators */
+.match-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+}
+
+.match-role {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.match-percent {
+    font-size: 24px;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.match-bar {
+    height: 8px;
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 10px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.match-fill {
+    height: 100%;
+    background: var(--gradient);
+    border-radius: 10px;
+    transition: width 1.5s ease-in-out;
+}
+
+/* Schedule */
+.schedule-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.schedule-item:hover {
+    border-color: var(--accent);
+    transform: translateX(5px);
+}
+
+.schedule-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: rgba(99, 102, 241, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    font-size: 20px;
+}
+
+.schedule-details h4 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.schedule-details p {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .sidebar {
+        width: 250px;
+    }
+    .main {
+        margin-left: 250px;
+    }
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    .main {
+        margin-left: 0;
+    }
+    .menu-toggle {
+        display: block;
+    }
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .main {
+        padding: 20px;
+    }
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .chat-input {
+        flex-direction: column;
+    }
+    .chat-input button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="logo-text">Agentic AI</div>
+        </div>
+        
+        <div class="nav">
+            <div class="nav-item active" data-section="career-overview">
+                <i class="fas fa-chart-line"></i>
+                <span>Career Overview</span>
+            </div>
+            <div class="nav-item" data-section="skill-gaps">
+                <i class="fas fa-search"></i>
+                <span>Skill Gap Analysis</span>
+            </div>
+            <div class="nav-item" data-section="learning-roadmap">
+                <i class="fas fa-road"></i>
+                <span>Learning Roadmap</span>
+            </div>
+            <div class="nav-item" data-section="interview-planner">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Interview Planner</span>
+            </div>
+            <div class="nav-item" data-section="market-alignment">
+                <i class="fas fa-bullseye"></i>
+                <span>Market Alignment</span>
+            </div>
+            <div class="nav-item" data-section="admin-insights">
+                <i class="fas fa-cogs"></i>
+                <span>Admin Insights</span>
+            </div>
+        </div>
+        
+        <div class="user-profile">
+            <div class="avatar">SA</div>
+            <div class="user-info">
+                <h4>Student A</h4>
+                <p>Software Engineer Target</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <!-- Header with dynamic title -->
+        <div class="header">
+            <div>
+                <h1 id="page-title">Career Overview Dashboard</h1>
+                <p id="page-subtitle">Personalized insights to accelerate your career growth</p>
+            </div>
+            <div class="header-controls">
+                <div class="btn-icon" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="btn-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="btn-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- CAREER OVERVIEW SECTION -->
+        <div class="section active" id="career-overview">
+            <div class="section-title">
+                <i class="fas fa-chart-line"></i>
+                <span>Career Profile Memory</span>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="stat-value">65%</div>
+                    <div class="stat-label">Job Readiness Score</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-change positive">+8% this month</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Interviews Completed</div>
+                    <div class="stat-change positive">100% Integrity Score</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Skill Gaps Identified</div>
+                    <div class="stat-change negative">-2 from last month</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="stat-value">High</div>
+                    <div class="stat-label">Market Alignment</div>
+                    <div class="stat-change positive">+12% demand growth</div>
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-user"></i>
+                        Candidate Profile
+                    </div>
+                    <p><strong>Name:</strong> Student A</p>
+                    <p><strong>Target Role:</strong> Software Engineer</p>
+                    <p><strong>Experience Level:</strong> Entry Level</p>
+                    <p><strong>Preferred Stack:</strong> JavaScript, Python, SQL</p>
+                    <p><strong>Career Goal:</strong> Backend Engineering in 12 months</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-history"></i>
+                        Interview History
+                    </div>
+                    <p>✅ <strong>Technical Interviews:</strong> 3 completed</p>
+                    <p>✅ <strong>Behavioral Interviews:</strong> 2 completed</p>
+                    <p>✅ <strong>System Design Interviews:</strong> 1 completed</p>
+                    <p>✅ <strong>Malpractice Detected:</strong> 0 incidents</p>
+                    <p>✅ <strong>Average Score:</strong> 72/100</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SKILL GAP ANALYSIS SECTION -->
+        <div class="section" id="skill-gaps">
+            <div class="section-title">
+                <i class="fas fa-search"></i>
+                <span>Skill Gap Reasoning Agent</span>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Weak Areas Detected
+                    </div>
+                    <div class="tags">
+                        <div class="tag tag-warning">
+                            <i class="fas fa-database"></i> System Design
+                        </div>
+                        <div class="tag tag-danger">
+                            <i class="fas fa-server"></i> SQL Optimization
+                        </div>
+                        <div class="tag tag-warning">
+                            <i class="fas fa-comments"></i> Behavioral STAR
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container" style="margin-top: 25px;">
+                        <div class="progress-label">
+                            <span>System Design Proficiency</span>
+                            <span>45%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>SQL Performance Skills</span>
+                            <span>38%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 38%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Behavioral Interview Skills</span>
+                            <span>52%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 52%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-brain"></i>
+                        Reasoning Analysis
+                    </div>
+                    <p style="margin-bottom: 20px; color: var(--text-muted);">Based on 5 interview analysis sessions, here are the key findings:</p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: var(--danger); margin-bottom: 10px;">
+                            <i class="fas fa-times-circle"></i> Critical Issues
+                        </h4>
+                        <ul style="padding-left: 20px; color: var(--text-muted);">
+                            <li>Incomplete explanations in technical interviews</li>
+                            <li>Missing real-world examples in system design</li>
+                            <li>Weak trade-off justification in architecture decisions</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: var(--success); margin-bottom: 10px;">
+                            <i class="fas fa-check-circle"></i> Strengths
+                        </h4>
+                        <ul style="padding-left: 20px; color: var(--text-muted);">
+                            <li>Strong algorithmic problem-solving skills</li>
+                            <li>Good communication clarity</li>
+                            <li>Solid foundation in programming fundamentals</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEARNING ROADMAP SECTION -->
+        <div class="section" id="learning-roadmap">
+            <div class="section-title">
+                <i class="fas fa-road"></i>
+                <span>Personalized Learning Roadmap</span>
+            </div>
+            
+            <div class="roadmap">
+                <div class="roadmap-item">
+                    <div class="roadmap-week">Week 1</div>
+                    <div class="roadmap-content">
+                        <h4>SQL Query Optimization</h4>
+                        <p>Advanced query optimization, indexing strategies, and performance analysis. Complete 3 real-world database scenarios.</p>
+                        <div class="tags" style="margin-top: 10px;">
+                            <div class="tag tag-success">Priority: High</div>
+                            <div class="tag">Estimated: 10 hours</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="roadmap-item">
+                    <div class="roadmap-week">Week 2</div>
+                    <div class="roadmap-content">
+                        <h4>System Design Fundamentals</h4>
+                        <p>Design patterns, scalability principles, and trade-off analysis. Build 2 complete system architectures.</p>
+                        <div class="tags" style="margin-top: 10px;">
+                            <div class="tag tag-success">Priority: High</div>
+                            <div class="tag">Estimated: 15 hours</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="roadmap-item">
+                    <div class="roadmap-week">Week 3</div>
+                    <div class="roadmap-content">
+                        <h4>Mock Behavioral Interviews</h4>
+                        <p>STAR method mastery, leadership stories, and conflict resolution. Practice with 5 different scenarios.</p>
+                        <div class="tags" style="margin-top: 10px;">
+                            <div class="tag tag-warning">Priority: Medium</div>
+                            <div class="tag">Estimated: 8 hours</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="roadmap-item">
+                    <div class="roadmap-week">Week 4</div>
+                    <div class="roadmap-content">
+                        <h4>Advanced Architecture Q&A</h4>
+                        <p>Microservices, event-driven systems, and cloud-native patterns. Complete capstone project review.</p>
+                        <div class="tags" style="margin-top: 10px;">
+                            <div class="tag tag-warning">Priority: Medium</div>
+                            <div class="tag">Estimated: 12 hours</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top: 30px;">
+                <div class="card-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Weekly Recommendations
+                </div>
+                <p>Focus on Week 1 and Week 2 content first, as SQL Optimization and System Design are your weakest areas. Schedule 2-3 hours daily for maximum impact.</p>
+                <div class="tags" style="margin-top: 15px;">
+                    <div class="tag tag-success">Recommended Pace: 15 hrs/week</div>
+                    <div class="tag">Projected Completion: 4 weeks</div>
+                    <div class="tag tag-success">Expected Improvement: +25% readiness</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW PLANNER SECTION -->
+        <div class="section" id="interview-planner">
+            <div class="section-title">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Autonomous Interview Planner</span>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-calendar-check"></i>
+                        Next Scheduled Interview
+                    </div>
+                    
+                    <div class="schedule-item">
+                        <div class="schedule-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="schedule-details">
+                            <h4>Technical Interview (Focused Session)</h4>
+                            <p>Focus Areas: System Design & SQL Optimization</p>
+                            <p><i class="far fa-clock"></i> Duration: 30 minutes</p>
+                            <p><i class="fas fa-calendar"></i> Date: Tomorrow, 2:00 PM</p>
+                            <p><i class="fas fa-bolt"></i> Difficulty: Adaptive (Medium-High)</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4 style="color: var(--accent); margin-bottom: 10px;">Preparation Checklist</h4>
+                        <ul style="padding-left: 20px; color: var(--text-muted);">
+                            <li>Review database indexing strategies</li>
+                            <li>Practice 2 system design problems</li>
+                            <li>Prepare 3 real-world project examples</li>
+                            <li>Study trade-off analysis techniques</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-robot"></i>
+                        Agent Actions Enabled
+                    </div>
+                    
+                    <div style="margin-bottom: 25px;">
+                        <div class="tags">
+                            <div class="tag tag-success">
+                                <i class="fas fa-check-circle"></i> Adaptive Difficulty
+                            </div>
+                            <div class="tag tag-success">
+                                <i class="fas fa-check-circle"></i> Topic Prioritization
+                            </div>
+                            <div class="tag tag-success">
+                                <i class="fas fa-check-circle"></i> Follow-up Strategy
+                            </div>
+                            <div class="tag tag-success">
+                                <i class="fas fa-check-circle"></i> Real-time Feedback
+                            </div>
+                            <div class="tag tag-success">
+                                <i class="fas fa-check-circle"></i> Progress Tracking
+                            </div>
+                            <div class="tag tag-success">
+                                <i class="fas fa-check-circle"></i> Pattern Recognition
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: var(--accent); margin-bottom: 10px;">Upcoming Interviews</h4>
+                        <div style="background: rgba(30, 41, 59, 0.3); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                            <p><strong>Behavioral Interview</strong> - 3 days from now</p>
+                            <p style="color: var(--text-muted); font-size: 14px;">Focus: STAR method and conflict resolution</p>
+                        </div>
+                        <div style="background: rgba(30, 41, 59, 0.3); padding: 15px; border-radius: 10px;">
+                            <p><strong>System Design Deep Dive</strong> - 1 week from now</p>
+                            <p style="color: var(--text-muted); font-size: 14px;">Focus: Scalability and trade-off analysis</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MARKET ALIGNMENT SECTION -->
+        <div class="section" id="market-alignment">
+            <div class="section-title">
+                <i class="fas fa-bullseye"></i>
+                <span>Market & Role Alignment</span>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-chart-line"></i>
+                        Role Fit Analysis
+                    </div>
+                    
+                    <div class="match-indicator">
+                        <div class="match-role">Software Engineer</div>
+                        <div class="match-percent">65%</div>
+                    </div>
+                    <div class="match-bar">
+                        <div class="match-fill" style="width: 65%"></div>
+                    </div>
+                    
+                    <div class="match-indicator">
+                        <div class="match-role">Backend Engineer</div>
+                        <div class="match-percent">58%</div>
+                    </div>
+                    <div class="match-bar">
+                        <div class="match-fill" style="width: 58%"></div>
+                    </div>
+                    
+                    <div class="match-indicator">
+                        <div class="match-role">Data Analyst</div>
+                        <div class="match-percent">40%</div>
+                    </div>
+                    <div class="match-bar">
+                        <div class="match-fill" style="width: 40%"></div>
+                    </div>
+                    
+                    <div class="match-indicator">
+                        <div class="match-role">DevOps Engineer</div>
+                        <div class="match-percent">35%</div>
+                    </div>
+                    <div class="match-bar">
+                        <div class="match-fill" style="width: 35%"></div>
+                    </div>
+                    
+                    <div style="margin-top: 25px; padding: 20px; background: rgba(99, 102, 241, 0.1); border-radius: 12px;">
+                        <h4 style="color: var(--accent); margin-bottom: 10px;">
+                            <i class="fas fa-lightbulb"></i> Strategic Insight
+                        </h4>
+                        <p style="color: var(--text-muted);">Your current skill profile aligns best with Software Engineering roles. Focus on system design and SQL optimization to increase match with Backend Engineering positions (+15% potential improvement).</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-industry"></i>
+                        Market Demand Analysis
+                    </div>
+                    
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="color: var(--text); margin-bottom: 15px;">Top In-Demand Skills</h4>
+                        <div class="tags">
+                            <div class="tag tag-success">System Design (+42% demand)</div>
+                            <div class="tag tag-success">Cloud Architecture (+38% demand)</div>
+                            <div class="tag">SQL Optimization (+25% demand)</div>
+                            <div class="tag">Microservices (+22% demand)</div>
+                            <div class="tag">Problem Solving (+18% demand)</div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: var(--text); margin-bottom: 15px;">Salary Range Analysis</h4>
+                        <div style="background: rgba(30, 41, 59, 0.3); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                            <p><strong>Software Engineer</strong></p>
+                            <p style="color: var(--success);">$85k - $120k (Entry Level)</p>
+                        </div>
+                        <div style="background: rgba(30, 41, 59, 0.3); padding: 15px; border-radius: 10px;">
+                            <p><strong>Backend Engineer</strong></p>
+                            <p style="color: var(--success);">$90k - $130k (Entry Level)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN INSIGHTS SECTION -->
+        <div class="section" id="admin-insights">
+            <div class="section-title">
+                <i class="fas fa-cogs"></i>
+                <span>Admin & Vector Intelligence</span>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Common Failure Patterns
+                    </div>
+                    
+                    <div style="margin-bottom: 25px;">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; padding: 15px; background: rgba(239, 68, 68, 0.1); border-radius: 10px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(239, 68, 68, 0.2); display: flex; align-items: center; justify-content: center; color: var(--danger);">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div>
+                                <h4 style="margin-bottom: 5px;">Lack of Depth</h4>
+                                <p style="color: var(--text-muted); font-size: 14px;">Surface-level explanations without technical depth</p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; padding: 15px; background: rgba(239, 68, 68, 0.1); border-radius: 10px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(239, 68, 68, 0.2); display: flex; align-items: center; justify-content: center; color: var(--danger);">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div>
+                                <h4 style="margin-bottom: 5px;">No Concrete Examples</h4>
+                                <p style="color: var(--text-muted); font-size: 14px;">Theoretical knowledge without real-world application</p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(239, 68, 68, 0.1); border-radius: 10px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(239, 68, 68, 0.2); display: flex; align-items: center; justify-content: center; color: var(--danger);">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div>
+                                <h4 style="margin-bottom: 5px;">Conceptual Confusion</h4>
+                                <p style="color: var(--text-muted); font-size: 14px;">Misunderstanding fundamental system design concepts</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: var(--accent); margin-bottom: 10px;">Pattern Frequency</h4>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>System Design Issues</span>
+                                <span>68% of failures</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 68%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-database"></i>
+                        FAISS-Based Intelligence
+                    </div>
+                    
+                    <div style="margin-bottom: 25px; padding: 20px; background: rgba(30, 41, 59, 0.3); border-radius: 12px;">
+                        <h4 style="color: var(--accent); margin-bottom: 10px;">Semantic Analysis Insight</h4>
+                        <p style="color: var(--text-muted); font-style: italic;">
+                            "System Design follow-up questions cause the highest score drop across interviews. Candidates who prepare with real-world architectural examples show 40% better performance in follow-up rounds."
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: var(--accent); margin-bottom: 10px;">Vector Similarity Patterns</h4>
+                        <div style="margin-bottom: 15px;">
+                            <p style="margin-bottom: 5px;">High similarity with candidates who:</p>
+                            <ul style="padding-left: 20px; color: var(--text-muted);">
+                                <li>Struggle with trade-off analysis (92% similarity)</li>
+                                <li>Excel in algorithmic thinking (78% similarity)</li>
+                                <li>Need improvement in behavioral responses (85% similarity)</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <p style="margin-bottom: 5px;">Recommended learning paths from similar successful candidates:</p>
+                            <div class="tags">
+                                <div class="tag tag-success">System Design Patterns Course</div>
+                                <div class="tag tag-success">Real-world Project Examples</div>
+                                <div class="tag">Trade-off Analysis Workshop</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chatbot Section -->
+            <div class="card" style="margin-top: 30px;">
+                <div class="card-title">
+                    <i class="fas fa-robot"></i>
+                    Agentic Insights Chatbot
+                </div>
+                
+                <div class="chat-container">
+                    <div class="chatbox" id="chatbox">
+                        <div class="message message-user">
+                            <div class="message-header">
+                                <i class="fas fa-user"></i>
+                                You
+                            </div>
+                            Why is my interview score low in system design?
+                        </div>
+                        <div class="message message-ai">
+                            <div class="message-header">
+                                <i class="fas fa-robot"></i>
+                                AI Assistant
+                            </div>
+                            Your answers lack depth, real-world examples, and trade-off reasoning. Focus on providing concrete examples from past projects and explaining architectural decisions.
+                        </div>
+                        <div class="message message-user">
+                            <div class="message-header">
+                                <i class="fas fa-user"></i>
+                                You
+                            </div>
+                            What should I focus on for my next interview?
+                        </div>
+                        <div class="message message-ai">
+                            <div class="message-header">
+                                <i class="fas fa-robot"></i>
+                                AI Assistant
+                            </div>
+                            Improve structured explanations and project-based examples. Practice the STAR method for behavioral questions and focus on SQL optimization scenarios.
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Ask about patterns, red flags, trends, or recommendations...">
+                        <button id="sendButton">
+                            <i class="fas fa-paper-plane"></i>
+                            Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Agentic AI Career Copilot • v2.5 • Powered by Adaptive Learning Models
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Navigation functionality
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('.section');
+    const pageTitle = document.getElementById('page-title');
+    const pageSubtitle = document.getElementById('page-subtitle');
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    
+    // Page titles for each section
+    const pageTitles = {
+        'career-overview': {
+            title: 'Career Overview Dashboard',
+            subtitle: 'Personalized insights to accelerate your career growth'
+        },
+        'skill-gaps': {
+            title: 'Skill Gap Analysis',
+            subtitle: 'Identify and address your weak areas systematically'
+        },
+        'learning-roadmap': {
+            title: 'Learning Roadmap',
+            subtitle: 'Personalized path to master required skills'
+        },
+        'interview-planner': {
+            title: 'Interview Planner',
+            subtitle: 'AI-powered interview preparation and scheduling'
+        },
+        'market-alignment': {
+            title: 'Market Alignment',
+            subtitle: 'Match your skills with industry demands'
+        },
+        'admin-insights': {
+            title: 'Admin Intelligence',
+            subtitle: 'Advanced analytics and pattern recognition'
+        }
+    };
+    
+    // Navigation click handler
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const sectionId = this.getAttribute('data-section');
+            
+            // Update active navigation item
+            navItems.forEach(nav => nav.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show selected section, hide others
+            sections.forEach(section => {
+                section.classList.remove('active');
+                if (section.id === sectionId) {
+                    section.classList.add('active');
+                }
+            });
+            
+            // Update page title and subtitle
+            if (pageTitles[sectionId]) {
+                pageTitle.textContent = pageTitles[sectionId].title;
+                pageSubtitle.textContent = pageTitles[sectionId].subtitle;
+            }
+            
+            // Close sidebar on mobile after selection
+            if (window.innerWidth < 992) {
+                sidebar.classList.remove('active');
+            }
+        });
+    });
+    
+    // Mobile menu toggle
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+        });
+    }
+    
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth < 992 && 
+            !sidebar.contains(event.target) && 
+            !menuToggle.contains(event.target) &&
+            sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    });
+    
+    // Chat functionality
+    const chatInput = document.getElementById('chatInput');
+    const sendButton = document.getElementById('sendButton');
+    const chatbox = document.getElementById('chatbox');
+    
+    const aiResponses = [
+        "Based on your interview patterns, you need to improve system design explanations with more concrete examples from real projects.",
+        "Your SQL optimization skills have improved by 15% since last month. Keep practicing with realistic database scenarios.",
+        "I recommend focusing on behavioral questions using the STAR method. Your current responses lack structured storytelling.",
+        "Market analysis shows 22% growth in demand for Software Engineers with your emerging skill profile.",
+        "Your biggest strength is algorithmic problem-solving. Leverage this in technical interviews to build confidence.",
+        "Consider studying microservices architecture patterns specifically - this could improve your system design scores by 30%.",
+        "Based on FAISS vector analysis, candidates with similar patterns benefited most from real-world project work.",
+        "Your interview performance trajectory is positive - 8% improvement month-over-month. Keep the momentum!",
+        "The most common failure pattern for your profile is lack of depth in trade-off analysis. Focus here.",
+        "Your skill gap analysis suggests prioritizing system design over SQL optimization for maximum impact."
+    ];
+    
+    function addMessage(content, isUser = true) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'message-user' : 'message-ai'}`;
+        
+        const messageHeader = document.createElement('div');
+        messageHeader.className = 'message-header';
+        messageHeader.innerHTML = isUser ? 
+            '<i class="fas fa-user"></i> You' : 
+            '<i class="fas fa-robot"></i> AI Assistant';
+        
+        messageDiv.appendChild(messageHeader);
+        messageDiv.appendChild(document.createTextNode(content));
+        
+        chatbox.appendChild(messageDiv);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+    
+    if (sendButton && chatInput) {
+        sendButton.addEventListener('click', function() {
+            const message = chatInput.value.trim();
+            if (message) {
+                addMessage(message, true);
+                chatInput.value = '';
+                
+                // Show typing indicator
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'message message-ai';
+                typingIndicator.innerHTML = '<div class="message-header"><i class="fas fa-robot"></i> AI Assistant</div><em>Typing...</em>';
+                chatbox.appendChild(typingIndicator);
+                chatbox.scrollTop = chatbox.scrollHeight;
+                
+                // Simulate AI response after a delay
+                setTimeout(() => {
+                    chatbox.removeChild(typingIndicator);
+                    const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+                    addMessage(randomResponse, false);
+                }, 1500);
+            }
+        });
+        
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+    }
+    
+    // Animate progress bars when section becomes visible
+    const observerOptions = {
+        threshold: 0.2
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const progressFills = entry.target.querySelectorAll('.progress-fill');
+                progressFills.forEach(fill => {
+                    const width = fill.style.width;
+                    fill.style.width = '0';
+                    setTimeout(() => {
+                        fill.style.width = width;
+                    }, 300);
+                });
+                
+                const matchFills = entry.target.querySelectorAll('.match-fill');
+                matchFills.forEach(fill => {
+                    const width = fill.style.width;
+                    fill.style.width = '0';
+                    setTimeout(() => {
+                        fill.style.width = width;
+                    }, 300);
+                });
+            }
+        });
+    }, observerOptions);
+    
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+    
+    // Add some sample data animation on load
+    setTimeout(() => {
+        document.querySelectorAll('.progress-fill, .match-fill').forEach(fill => {
+            const width = fill.style.width;
+            fill.style.width = '0';
+            setTimeout(() => {
+                fill.style.width = width;
+            }, 500);
+        });
+    }, 1000);
+});
+</script>
+</body>
+</html>

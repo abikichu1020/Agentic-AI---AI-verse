@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Profile | Admin Panel</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #141414;
+            border-right: 1px solid #1f1f1f;
+            padding-top: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            font-size: 21px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #cfcfcf;
+        }
+
+        .nav-item {
+            padding: 14px 25px;
+            cursor: pointer;
+            font-size: 15px;
+            color: #ccc;
+            transition: .25s;
+        }
+
+        .nav-item:hover,
+        .active {
+            background: #1e1e1e;
+            color: #fff;
+        }
+
+        .main {
+            flex: 1;
+            padding: 25px 40px;
+            overflow-y: auto;
+        }
+
+        .title {
+            font-size: 23px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #bbb;
+            margin-bottom: 25px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: #161616;
+            padding: 22px;
+            border-radius: 12px;
+            border: 1px solid #222;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            transition: 0.25s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            background: #1b1b1b;
+        }
+
+        .card-title {
+            font-size: 15px;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #222;
+        }
+
+        th {
+            font-size: 14px;
+            color: #bbb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        tr:hover {
+            background: #1a1a1a;
+        }
+
+        .btn-report {
+            padding: 7px 12px;
+            background: #4f46e5;
+            color: #fff;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.25s;
+        }
+
+        .btn-report:hover {
+            background: #6d63ff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+
+        <!-- FIXED ROUTES -->
+        <div class="nav-item" onclick="location.href='/admin-dashboard'">📊 Dashboard</div>
+        <div class="nav-item active" onclick="location.href='/admin-students'">🎓 Students</div>
+
+        <div class="nav-item" onclick="logout()">🚪 Logout</div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+        <div class="title">Student Profile</div>
+        <div class="subtitle">Detailed performance and interview history</div>
+
+        <!-- Cards -->
+        <div class="info-grid">
+            <div class="card">
+                <div class="card-title">Name</div>
+                <div class="card-value" id="name">Loading...</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Email</div>
+                <div class="card-value" id="email">Loading...</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Department</div>
+                <div class="card-value" id="dept">-</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Year</div>
+                <div class="card-value" id="year">-</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Total Interviews</div>
+                <div class="card-value" id="count">0</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Average Score</div>
+                <div class="card-value" id="avg">0</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Latest Score</div>
+                <div class="card-value" id="latest">0</div>
+            </div>
+        </div>
+
+        <h2 style="margin-bottom:10px;">Interview History</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Interview ID</th>
+                    <th>Type</th>
+                    <th>Score</th>
+                    <th>Duration</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="interviewTable"></tbody>
+        </table>
+
+    </div>
+    
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const email = params.get("email");
+
+        if (!email) {
+            alert("No student selected");
+            window.location.href = "/admin-students";  // FIXED
+        }
+
+        async function loadProfile() {
+            const res = await fetch(`/api/admin/student?email=${email}`);
+            const data = await res.json();
+
+            if (!data.success) {
+                alert("Failed to load student");
+                return;
+            }
+
+            const s = data.student;
+            const interviews = data.interviews;
+
+            document.getElementById("name").innerText = s.name || "-";
+            document.getElementById("email").innerText = s.email;
+            document.getElementById("dept").innerText = s.department || "-";
+            document.getElementById("year").innerText = s.year || "-";
+            document.getElementById("count").innerText = s.interviews_count;
+            document.getElementById("avg").innerText = s.average_score;
+            document.getElementById("latest").innerText = s.latest_score;
+
+            const table = document.getElementById("interviewTable");
+            table.innerHTML = "";
+
+            interviews.forEach(i => {
+                const tr = document.createElement("tr");
+
+                tr.innerHTML = `
+                    <td>${i.interview_id}</td>
+                    <td>${i.interview_type}</td>
+                    <td>${i.overall_score || 0}</td>
+                    <td>${i.duration || "-"}</td>
+                    <td>${i.start_time ? i.start_time.split("T")[0] : "-"}</td>
+                    <td>
+                        <button class="btn-report" onclick="viewReport('${i.interview_id}')">View</button>
+                    </td>
+                `;
+
+                table.appendChild(tr);
+            });
+        }
+
+        function viewReport(id) {
+            window.location.href = `/admin-report?id=${id}`;   // FIXED
+        }
+
+        function logout() {
+            fetch("/api/admin/logout", { method: "POST" })
+            .then(() => window.location.href = "/");
+        }
+        async function loadProgress(email) {
+    const res = await fetch(`/api/student/progress/${email}`);
+    const data = await res.json();
+
+    const labels = data.progress.map(p => p.date);
+    const scores = data.progress.map(p => p.score);
+
+    new Chart(document.getElementById("progressChart"), {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Interview Score",
+                data: scores
+            }]
+        }
+    });
+}
+
+        
+        loadProfile();
+    </script>
+
+</body>
+</html>

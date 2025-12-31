@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Login | Interview System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0b0b0b, #141414, #0f0f0f);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .card {
+            width: 420px;
+            padding: 40px 45px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0px 0px 25px rgba(0,0,0,0.45);
+            animation: fadeIn 0.9s ease-in-out;
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            color: #ddd;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: #1d1d1d;
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #5b45f6;
+            box-shadow: 0 0 8px rgba(91,69,246,0.5);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            background: #4f46e5;
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .login-btn:hover {
+            background: #6b63ff;
+            transform: scale(1.02);
+        }
+
+        .error {
+            background: rgba(255, 50, 50, 0.15);
+            padding: 10px;
+            border-left: 4px solid #ff4444;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            display: none;
+            color: #ff6f6f;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0px); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-4px); }
+            100% { transform: translateX(0px); }
+        }
+
+        .shake {
+            animation: shake 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            margin-top: 15px;
+            text-align: center;
+            color: #999;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card" id="loginCard">
+        <div class="title">Admin Login</div>
+        <div class="subtitle">Access your dashboard</div>
+
+        <div class="error" id="errorBox"></div>
+
+        <div class="input-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="admin@example.com">
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Enter Password">
+        </div>
+
+        <button class="login-btn" onclick="login()">Login</button>
+
+        <div class="back-btn" onclick="window.location.href='/'">
+            ← Back to Home
+        </div>
+    </div>
+
+    <script>
+        async function login() {
+            const card = document.getElementById("loginCard");
+            const errorBox = document.getElementById("errorBox");
+            const email = document.getElementById("email").value.trim().toLowerCase();
+            const password = document.getElementById("password").value;
+
+            if (!email || !password) {
+                showError("Please fill in all fields");
+                return;
+            }
+
+            const res = await fetch("/api/admin/login", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                showError(data.error || "Invalid login");
+                return;
+            }
+
+            // FIXED: Correct Flask route (NO .html)
+            window.location.href = "/admin-dashboard";
+        }
+
+        function showError(msg) {
+            const errorBox = document.getElementById("errorBox");
+            const card = document.getElementById("loginCard");
+
+            errorBox.style.display = "block";
+            errorBox.innerText = msg;
+
+            card.classList.remove("shake");
+            void card.offsetWidth;
+            card.classList.add("shake");
+        }
+    </script>
+
+</body>
+</html>

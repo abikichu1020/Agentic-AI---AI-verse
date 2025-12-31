@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interview System | Choose Role</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f0f, #1b1b1b, #111);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 40px 50px;
+            border-radius: 14px;
+            width: 450px;
+            text-align: center;
+            box-shadow: 0px 0px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(15px);
+            animation: fadeIn 0.9s ease-in-out;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .role-btn {
+            width: 100%;
+            padding: 15px;
+            margin: 12px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            background: #222;
+            color: #fff;
+            font-weight: 600;
+            transition: all 0.25s;
+        }
+
+        .role-btn:hover {
+            background: #4f46e5;
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(79,70,229,0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="title">Welcome to AI Interview Portal</div>
+        <div class="subtitle">Select how you want to continue</div>
+
+        <!-- FIXED ROUTES BELOW -->
+
+        <button class="role-btn" onclick="window.location.href='/admin-login'">
+            👨‍💼 Admin Login
+        </button>
+
+        <button class="role-btn" onclick="window.location.href='/interview'">
+            🎓 Student Interview
+        </button>
+    </div>
+
+</body>
+</html>

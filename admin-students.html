@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Students | Admin Panel</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #141414;
+            border-right: 1px solid #1f1f1f;
+            padding-top: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            font-size: 21px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #cfcfcf;
+        }
+
+        .nav-item {
+            padding: 14px 25px;
+            cursor: pointer;
+            font-size: 15px;
+            color: #ccc;
+            transition: .25s;
+        }
+
+        .nav-item:hover,
+        .active {
+            background: #1e1e1e;
+            color: #fff;
+        }
+
+        .main {
+            flex: 1;
+            padding: 25px 40px;
+            overflow-y: auto;
+        }
+
+        .topbar {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 350px;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: #1a1a1a;
+            color: #fff;
+            outline: none;
+            transition: 0.25s;
+        }
+
+        .search-box input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 8px rgba(79, 70, 229, .5);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #222;
+        }
+
+        th {
+            font-size: 14px;
+            color: #bbb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        tr:hover {
+            background: #1b1b1b;
+        }
+
+        .btn-view {
+            padding: 7px 14px;
+            background: #4f46e5;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-view:hover {
+            background: #6d63ff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+
+        <!-- CORRECT ROUTES -->
+        <div class="nav-item" onclick="window.location.href='/admin-dashboard'">📊 Dashboard</div>
+        <div class="nav-item active">🎓 Students</div>
+        <div class="nav-item" onclick="logout()">🚪 Logout</div>
+    </div>
+
+    <div class="main">
+
+        <div class="topbar">Student List</div>
+
+        <div class="search-box">
+            <input type="text" id="search" placeholder="Search by name or email..." onkeyup="filterStudents()">
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Year</th>
+                    <th>Interviews</th>
+                    <th>Avg Score</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="studentTable"></tbody>
+        </table>
+
+    </div>
+
+    <script>
+        let STUDENTS = [];
+
+        async function loadStudents() {
+            const res = await fetch("/api/admin/students", {
+                credentials: "include"
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+                alert("Unauthorized — login again");
+                window.location.href = "/admin-login";
+                return;
+            }
+
+            STUDENTS = data.students;
+            renderTable(STUDENTS);
+        }
+
+        function renderTable(list) {
+            const table = document.getElementById("studentTable");
+            table.innerHTML = "";
+
+            list.forEach(s => {
+                const tr = document.createElement("tr");
+
+                tr.innerHTML = `
+                    <td>${s.name || "-"}</td>
+                    <td>${s.email}</td>
+                    <td>${s.department || "-"}</td>
+                    <td>${s.year || "-"}</td>
+                    <td>${s.interviews_count || 0}</td>
+                    <td>${s.average_score || 0}</td>
+                    <td>
+                        <button class="btn-view" onclick="openProfile('${s.email}')">View</button>
+                    </td>
+                `;
+
+                table.appendChild(tr);
+            });
+        }
+
+        function filterStudents() {
+            const q = document.getElementById("search").value.toLowerCase();
+
+            const filtered = STUDENTS.filter(s =>
+                (s.name || "").toLowerCase().includes(q) ||
+                s.email.toLowerCase().includes(q)
+            );
+
+            renderTable(filtered);
+        }
+
+        function openProfile(email) {
+            // CORRECT ROUTE
+            window.location.href = `/admin-student-profile?email=${email}`;
+        }
+
+        function logout() {
+            fetch("/api/admin/logout", { method: "POST", credentials: "include" })
+                .then(() => window.location.href = "/");
+        }
+
+        loadStudents();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard | Interview System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #a5b4fc;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --bg: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --sidebar-bg: #141414;
+            --border: #262626;
+            --text: #ffffff;
+            --text-muted: #aaaaaa;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding: 0 10px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 22px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-muted);
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent);
+            border-color: var(--border);
+        }
+
+        .nav-item.active {
+            background: var(--gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-item i {
+            width: 24px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .admin-profile {
+            margin-top: auto;
+            padding: 20px;
+            border-radius: var(--radius);
+            background: rgba(30, 30, 30, 0.5);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            font-size: 18px;
+        }
+
+        .admin-info h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .admin-info p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            margin-top: 5px;
+            font-size: 16px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 18px;
+        }
+
+        .btn-icon:hover {
+            background: var(--gradient);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--gradient);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 22px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .positive {
+            color: var(--success);
+        }
+
+        .negative {
+            color: var(--danger);
+        }
+
+        /* Charts Section */
+        .charts-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: var(--accent);
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+        }
+
+        @media (max-width: 1200px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-box {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .chart-box:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* Recent Activity */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .activity-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .activity-list {
+            margin-top: 20px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .activity-icon.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .activity-icon.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .activity-icon.danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .activity-icon.info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .activity-details h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .activity-details p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Leaderboard Table */
+        .leaderboard-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        tr:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .rank {
+            width: 60px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .rank-1 {
+            background: rgba(255, 215, 0, 0.1);
+            color: #FFD700;
+        }
+
+        .rank-2 {
+            background: rgba(192, 192, 192, 0.1);
+            color: #C0C0C0;
+        }
+
+        .rank-3 {
+            background: rgba(205, 127, 50, 0.1);
+            color: #CD7F32;
+        }
+
+        .score {
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .recommendation {
+            max-width: 200px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Chatbot */
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+        }
+
+        .chatbot-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 380px;
+            height: 500px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chatbot-header {
+            padding: 20px;
+            background: var(--gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chatbot-header h3 {
+            margin: 0;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chatbot-close {
+            cursor: pointer;
+            font-size: 20px;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .chatbot-close:hover {
+            opacity: 1;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message-user {
+            align-self: flex-end;
+            background: var(--gradient);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-ai {
+            align-self: flex-start;
+            background: rgba(30, 30, 30, 0.5);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-header {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .chatbot-input {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 8px;
+            background: rgba(30, 30, 30, 0.5);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .chatbot-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .chatbot-input button {
+            padding: 0 20px;
+            border-radius: 8px;
+            border: none;
+            background: var(--gradient);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chatbot-input button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1001;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chatbot-window {
+                width: calc(100vw - 40px);
+                right: 20px;
+                bottom: 80px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .activity-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="logo-text">Admin Panel</div>
+        </div>
+        
+        <div class="nav">
+            <div class="nav-item active" data-section="dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/admin-students'">
+                <i class="fas fa-users"></i>
+                <span>Students</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/admin-interviews'">
+                <i class="fas fa-comments"></i>
+                <span>Interviews</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/admin-analytics'">
+                <i class="fas fa-chart-bar"></i>
+                <span>Analytics</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/admin-settings'">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </div>
+        </div>
+        
+        <div class="admin-profile">
+            <div class="admin-avatar">AD</div>
+            <div class="admin-info">
+                <h4>Admin User</h4>
+                <p>System Administrator</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1>Dashboard Overview</h1>
+                <p>Real-time insights and analytics for interview system</p>
+            </div>
+            <div class="header-controls">
+                <div class="btn-icon" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="btn-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="btn-icon" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-label">Total Students</div>
+                        <div class="stat-value" id="totalStudents">0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="stat-change positive">+12 this week</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-label">Total Interviews</div>
+                        <div class="stat-value" id="totalInterviews">0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                </div>
+                <div class="stat-change positive">+28 this week</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-label">Average Score</div>
+                        <div class="stat-value" id="averageScore">0</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="stat-change positive">+5.2% this month</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-label">System Health</div>
+                        <div class="stat-value">98%</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                </div>
+                <div class="stat-change positive">All systems operational</div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <div class="section-title">
+                <i class="fas fa-chart-bar"></i>
+                <span>Performance Analytics</span>
+            </div>
+            
+            <div class="chart-grid">
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <div class="chart-title">Top Performers</div>
+                        <div style="color: var(--text-muted); font-size: 14px;">Last 30 days</div>
+                    </div>
+                    <div id="topChart"></div>
+                </div>
+                
+                <div class="chart-box">
+                    <div class="chart-header">
+                        <div class="chart-title">Weak Performers</div>
+                        <div style="color: var(--text-muted); font-size: 14px;">Need attention</div>
+                    </div>
+                    <div id="weakChart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity & Leaderboard -->
+        <div class="activity-grid">
+            <div class="activity-card">
+                <div class="section-title" style="font-size: 20px; margin-bottom: 20px;">
+                    <i class="fas fa-history"></i>
+                    <span>Recent Activity</span>
+                </div>
+                
+                <div class="activity-list" id="activityList">
+                    <!-- Activity items will be populated here -->
+                </div>
+            </div>
+            
+            <div class="activity-card">
+                <div class="section-title" style="font-size: 20px; margin-bottom: 20px;">
+                    <i class="fas fa-trophy"></i>
+                    <span>Skill Distribution</span>
+                </div>
+                
+                <div id="skillChart"></div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Table -->
+        <div class="leaderboard-card">
+            <div class="section-title" style="font-size: 20px; margin-bottom: 20px;">
+                <i class="fas fa-medal"></i>
+                <span>Top Performers Leaderboard</span>
+            </div>
+            
+            <div class="table-container">
+                <table id="leaderboardTable">
+                    <thead>
+                        <tr>
+                            <th class="rank">Rank</th>
+                            <th>Student Name</th>
+                            <th>Email</th>
+                            <th>Score</th>
+                            <th>Weak Areas</th>
+                            <th>Recommendation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Table rows will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Toggle Button -->
+    <div class="chatbot-toggle" id="chatbotToggle">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Chatbot Window -->
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+            <h3><i class="fas fa-robot"></i> Admin Insights Assistant</h3>
+            <div class="chatbot-close" id="chatbotClose">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="message message-ai">
+                <div class="message-header">AI Assistant</div>
+                Hello Admin! I can help you analyze system data, identify patterns, and provide insights about student performance. How can I assist you today?
+            </div>
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Ask about insights, patterns, or recommendations...">
+            <button id="chatbotSend">
+                <i class="fas fa-paper-plane"></i>
+                Send
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ------------------------
+        // Initialize Dashboard
+        // ------------------------
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load dashboard data
+            loadDashboard();
+            
+            // Load leaderboard
+            loadLeaderboard();
+            
+            // Load activity log
+            loadActivityLog();
+            
+            // Load skill distribution chart
+            loadSkillChart();
+            
+            // Initialize mobile menu toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                });
+            }
+            
+            // Initialize chatbot
+            initChatbot();
+            
+            // Simulate real-time updates
+            setInterval(updateLiveStats, 30000);
+        });
+
+        // ------------------------
+        // Load Dashboard Stats
+        // ------------------------
+        async function loadDashboard() {
+            try {
+                // Simulated API response
+                const mockData = {
+                    total_students: 154,
+                    total_interviews: 428,
+                    average_score: 72.5,
+                    top_students: [
+                        { name: "Alex Johnson", email: "alex@example.com", average_score: 94 },
+                        { name: "Sam Wilson", email: "sam@example.com", average_score: 91 },
+                        { name: "Taylor Swift", email: "taylor@example.com", average_score: 89 },
+                        { name: "Jordan Lee", email: "jordan@example.com", average_score: 87 },
+                        { name: "Casey Smith", email: "casey@example.com", average_score: 85 }
+                    ],
+                    weak_students: [
+                        { name: "Riley Brown", email: "riley@example.com", average_score: 42 },
+                        { name: "Morgan Davis", email: "morgan@example.com", average_score: 45 },
+                        { name: "Jamie Miller", email: "jamie@example.com", average_score: 48 },
+                        { name: "Drew Wilson", email: "drew@example.com", average_score: 51 },
+                        { name: "Blake Taylor", email: "blake@example.com", average_score: 53 }
+                    ]
+                };
+
+                document.getElementById("totalStudents").innerText = mockData.total_students;
+                document.getElementById("totalInterviews").innerText = mockData.total_interviews;
+                document.getElementById("averageScore").innerText = mockData.average_score.toFixed(1);
+
+                loadTopChart(mockData.top_students);
+                loadWeakChart(mockData.weak_students);
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        function loadTopChart(students) {
+            const names = students.map(s => s.name);
+            const scores = students.map(s => s.average_score);
+
+            const options = {
+                series: [{ 
+                    name: "Score", 
+                    data: scores 
+                }],
+                chart: { 
+                    type: 'bar', 
+                    height: 300, 
+                    foreColor: "#fff",
+                    toolbar: { show: false }
+                },
+                plotOptions: { 
+                    bar: { 
+                        borderRadius: 8,
+                        columnWidth: '60%',
+                        dataLabels: {
+                            position: 'top'
+                        }
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function(val) {
+                        return val;
+                    },
+                    offsetY: -20,
+                    style: {
+                        colors: ["#fff"]
+                    }
+                },
+                xaxis: { 
+                    categories: names,
+                    labels: {
+                        style: {
+                            colors: '#aaa'
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            colors: '#aaa'
+                        }
+                    }
+                },
+                colors: ['#6366f1'],
+                grid: {
+                    borderColor: '#333',
+                    strokeDashArray: 5
+                },
+                tooltip: {
+                    theme: 'dark',
+                    y: {
+                        formatter: function(val) {
+                            return val + " points";
+                        }
+                    }
+                }
+            };
+
+            if (window.topChart) {
+                window.topChart.destroy();
+            }
+            
+            window.topChart = new ApexCharts(document.querySelector("#topChart"), options);
+            window.topChart.render();
+        }
+
+        function loadWeakChart(students) {
+            const names = students.map(s => s.name);
+            const scores = students.map(s => s.average_score);
+
+            const options = {
+                series: [{ 
+                    name: "Score", 
+                    data: scores 
+                }],
+                chart: { 
+                    type: 'bar', 
+                    height: 300, 
+                    foreColor: "#fff",
+                    toolbar: { show: false }
+                },
+                plotOptions: { 
+                    bar: { 
+                        borderRadius: 8,
+                        horizontal: true,
+                        dataLabels: {
+                            position: 'right'
+                        }
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function(val) {
+                        return val;
+                    },
+                    style: {
+                        colors: ["#fff"]
+                    }
+                },
+                xaxis: { 
+                    categories: names,
+                    labels: {
+                        style: {
+                            colors: '#aaa'
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            colors: '#aaa'
+                        }
+                    }
+                },
+                colors: ['#ef4444'],
+                grid: {
+                    borderColor: '#333',
+                    strokeDashArray: 5
+                },
+                tooltip: {
+                    theme: 'dark',
+                    y: {
+                        formatter: function(val) {
+                            return val + " points";
+                        }
+                    }
+                }
+            };
+
+            if (window.weakChart) {
+                window.weakChart.destroy();
+            }
+            
+            window.weakChart = new ApexCharts(document.querySelector("#weakChart"), options);
+            window.weakChart.render();
+        }
+
+        function loadSkillChart() {
+            const options = {
+                series: [44, 55, 41, 17, 15],
+                labels: ['System Design', 'SQL', 'Algorithms', 'Behavioral', 'OOP'],
+                chart: {
+                    type: 'donut',
+                    height: 300,
+                    foreColor: '#fff'
+                },
+                colors: ['#6366f1', '#8b5cf6', '#10b981', '#f59e0b', '#3b82f6'],
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '65%',
+                            labels: {
+                                show: true,
+                                total: {
+                                    show: true,
+                                    label: 'Skill Areas',
+                                    color: '#fff'
+                                }
+                            }
+                        }
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        colors: '#fff'
+                    }
+                },
+                tooltip: {
+                    theme: 'dark'
+                }
+            };
+
+            const chart = new ApexCharts(document.querySelector("#skillChart"), options);
+            chart.render();
+        }
+
+        // ------------------------
+        // Load Leaderboard
+        // ------------------------
+        async function loadLeaderboard() {
+            try {
+                // Simulated leaderboard data
+                const leaderboardData = [
+                    { rank: 1, name: "Alex Johnson", email: "alex@example.com", score: 94, weak_areas: "None", recommendation: "Ready for advanced interviews" },
+                    { rank: 2, name: "Sam Wilson", email: "sam@example.com", score: 91, weak_areas: "System Design", recommendation: "Focus on architecture patterns" },
+                    { rank: 3, name: "Taylor Swift", email: "taylor@example.com", score: 89, weak_areas: "SQL Optimization", recommendation: "Practice complex queries" },
+                    { rank: 4, name: "Jordan Lee", email: "jordan@example.com", score: 87, weak_areas: "Behavioral", recommendation: "Improve STAR method responses" },
+                    { rank: 5, name: "Casey Smith", email: "casey@example.com", score: 85, weak_areas: "Algorithms", recommendation: "Practice time complexity analysis" },
+                    { rank: 6, name: "Riley Brown", email: "riley@example.com", score: 42, weak_areas: "All areas", recommendation: "Basic fundamentals review needed" },
+                    { rank: 7, name: "Morgan Davis", email: "morgan@example.com", score: 45, weak_areas: "System Design, SQL", recommendation: "Start with design basics" },
+                    { rank: 8, name: "Jamie Miller", email: "jamie@example.com", score: 48, weak_areas: "Algorithms, OOP", recommendation: "Practice coding problems" },
+                    { rank: 9, name: "Drew Wilson", email: "drew@example.com", score: 51, weak_areas: "Behavioral, SQL", recommendation: "Work on communication skills" },
+                    { rank: 10, name: "Blake Taylor", email: "blake@example.com", score: 53, weak_areas: "System Design", recommendation: "Study scalability patterns" }
+                ];
+
+                const tbody = document.getElementById('leaderboardBody');
+                tbody.innerHTML = '';
+
+                leaderboardData.forEach(student => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="rank rank-${student.rank}">${student.rank}</td>
+                        <td><strong>${student.name}</strong></td>
+                        <td>${student.email}</td>
+                        <td class="score">${student.score}</td>
+                        <td>${student.weak_areas}</td>
+                        <td class="recommendation">${student.recommendation}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+            }
+        }
+
+        // ------------------------
+        // Load Activity Log
+        // ------------------------
+        async function loadActivityLog() {
+            try {
+                // Simulated activity data
+                const activities = [
+                    { type: 'success', icon: 'fa-user-plus', title: 'New Student Registered', time: '2 minutes ago', details: 'John Doe joined the platform' },
+                    { type: 'info', icon: 'fa-comment', title: 'Interview Completed', time: '15 minutes ago', details: 'Technical interview for Alex Johnson' },
+                    { type: 'warning', icon: 'fa-exclamation-triangle', title: 'Low Score Alert', time: '1 hour ago', details: 'Riley Brown scored below 45%' },
+                    { type: 'success', icon: 'fa-trophy', title: 'High Achievement', time: '2 hours ago', details: 'Sam Wilson achieved 95% in System Design' },
+                    { type: 'danger', icon: 'fa-bug', title: 'System Update', time: '3 hours ago', details: 'Performance monitoring system updated' },
+                    { type: 'info', icon: 'fa-chart-line', title: 'Analytics Generated', time: '5 hours ago', details: 'Weekly performance report ready' }
+                ];
+
+                const activityList = document.getElementById('activityList');
+                activityList.innerHTML = '';
+
+                activities.forEach(activity => {
+                    const item = document.createElement('div');
+                    item.className = 'activity-item';
+                    item.innerHTML = `
+                        <div class="activity-icon ${activity.type}">
+                            <i class="fas ${activity.icon}"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h4>${activity.title}</h4>
+                            <p>${activity.details}</p>
+                            <small style="color: #888;">${activity.time}</small>
+                        </div>
+                    `;
+                    activityList.appendChild(item);
+                });
+            } catch (error) {
+                console.error('Error loading activity log:', error);
+            }
+        }
+
+        // ------------------------
+        // Real-time Updates
+        // ------------------------
+        function updateLiveStats() {
+            // Simulate real-time updates
+            const totalStudents = document.getElementById('totalStudents');
+            const totalInterviews = document.getElementById('totalInterviews');
+            
+            const currentStudents = parseInt(totalStudents.textContent) || 154;
+            const currentInterviews = parseInt(totalInterviews.textContent) || 428;
+            
+            // Add small random increments
+            totalStudents.textContent = currentStudents + Math.floor(Math.random() * 3);
+            totalInterviews.textContent = currentInterviews + Math.floor(Math.random() * 5);
+            
+            // Update activity log with new entry
+            const newActivity = {
+                type: 'info',
+                icon: 'fa-sync',
+                title: 'Live Update',
+                time: 'Just now',
+                details: 'System statistics refreshed automatically'
+            };
+            
+            const activityList = document.getElementById('activityList');
+            const newItem = document.createElement('div');
+            newItem.className = 'activity-item';
+            newItem.innerHTML = `
+                <div class="activity-icon ${newActivity.type}">
+                    <i class="fas ${newActivity.icon}"></i>
+                </div>
+                <div class="activity-details">
+                    <h4>${newActivity.title}</h4>
+                    <p>${newActivity.details}</p>
+                    <small style="color: #888;">${newActivity.time}</small>
+                </div>
+            `;
+            
+            // Add to top and remove oldest if more than 6 items
+            activityList.insertBefore(newItem, activityList.firstChild);
+            if (activityList.children.length > 6) {
+                activityList.removeChild(activityList.lastChild);
+            }
+        }
+
+        // ------------------------
+        // Chatbot Functions
+        // ------------------------
+        function initChatbot() {
+            const toggleBtn = document.getElementById('chatbotToggle');
+            const closeBtn = document.getElementById('chatbotClose');
+            const chatWindow = document.getElementById('chatbotWindow');
+            const sendBtn = document.getElementById('chatbotSend');
+            const chatInput = document.getElementById('chatbotInput');
+            const chatMessages = document.getElementById('chatbotMessages');
+
+            toggleBtn.addEventListener('click', () => {
+                chatWindow.style.display = 'flex';
+                toggleBtn.style.display = 'none';
+                chatInput.focus();
+            });
+
+            closeBtn.addEventListener('click', () => {
+                chatWindow.style.display = 'none';
+                toggleBtn.style.display = 'flex';
+            });
+
+            sendBtn.addEventListener('click', sendChatMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendChatMessage();
+            });
+
+            // Predefined responses for common questions
+            window.chatbotResponses = {
+                'performance': "Overall system performance is excellent with 98% uptime. Student average score has improved by 5.2% this month.",
+                'top': "The top performer is Alex Johnson with 94% average score. They excel in all areas, particularly algorithms and system design.",
+                'weak': "Students needing most attention: Riley Brown (42%), Morgan Davis (45%), and Jamie Miller (48%). They struggle with fundamentals.",
+                'trend': "Current trends show improvement in SQL skills (+8%) but System Design remains challenging for many students.",
+                'alert': "Recent alerts: 3 students scored below 50% in the last week. Consider assigning them additional practice materials.",
+                'recommend': "Recommend focusing on System Design workshops and SQL optimization practice sessions for the next training cycle.",
+                'help': "I can help with: performance analytics, student insights, trend analysis, alerts review, and recommendations."
+            };
+        }
+
+        async function sendChatMessage() {
+            const chatInput = document.getElementById('chatbotInput');
+            const chatMessages = document.getElementById('chatbotMessages');
+            const message = chatInput.value.trim();
+            
+            if (!message) return;
+
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message message-user';
+            userMsg.innerHTML = `
+                <div class="message-header">You</div>
+                ${message}
+            `;
+            chatMessages.appendChild(userMsg);
+            chatInput.value = '';
+
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Show typing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'message message-ai';
+            typingIndicator.innerHTML = `
+                <div class="message-header">AI Assistant</div>
+                <i>Typing...</i>
+            `;
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Simulate AI processing
+            setTimeout(() => {
+                chatMessages.removeChild(typingIndicator);
+                
+                // Generate response based on keywords
+                const response = generateAIResponse(message.toLowerCase());
+                
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'message message-ai';
+                aiMsg.innerHTML = `
+                    <div class="message-header">AI Assistant</div>
+                    ${response}
+                `;
+                chatMessages.appendChild(aiMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000 + Math.random() * 1000);
+        }
+
+        function generateAIResponse(message) {
+            // Check for keywords and provide appropriate response
+            if (message.includes('performance') || message.includes('stats')) {
+                return window.chatbotResponses.performance;
+            } else if (message.includes('top') || message.includes('best')) {
+                return window.chatbotResponses.top;
+            } else if (message.includes('weak') || message.includes('poor') || message.includes('bad')) {
+                return window.chatbotResponses.weak;
+            } else if (message.includes('trend') || message.includes('pattern')) {
+                return window.chatbotResponses.trend;
+            } else if (message.includes('alert') || message.includes('warning')) {
+                return window.chatbotResponses.alert;
+            } else if (message.includes('recommend') || message.includes('suggest')) {
+                return window.chatbotResponses.recommend;
+            } else if (message.includes('help')) {
+                return window.chatbotResponses.help;
+            } else {
+                return "I understand you're asking about \"" + message + "\". For detailed insights, you can ask me about: performance stats, top performers, weak areas, trends, alerts, or recommendations.";
+            }
+        }
+
+        // ------------------------
+        // Logout Function
+        // ------------------------
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // In a real application, this would call your logout API
+                window.location.href = '/admin-login.html';
+            }
+        }
+    </script>
+</body>
+</html>

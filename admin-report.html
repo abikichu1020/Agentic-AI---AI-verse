@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interview Report</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #0d0d0d;
+            color: #fff;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: #141414;
+            border-right: 1px solid #1f1f1f;
+            padding-top: 25px;
+        }
+
+        .sidebar h2 {
+            font-size: 21px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #cfcfcf;
+        }
+
+        .nav-item {
+            padding: 14px 25px;
+            cursor: pointer;
+            font-size: 15px;
+            color: #ccc;
+            transition: .25s;
+        }
+
+        .nav-item:hover,
+        .active {
+            background: #1e1e1e;
+            color: #fff;
+        }
+
+        /* Main */
+        .main {
+            flex: 1;
+            padding: 25px 40px;
+            overflow-y: auto;
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #aaa;
+            margin-bottom: 25px;
+        }
+
+        /* Section box */
+        .section {
+            background: #151515;
+            border: 1px solid #222;
+            margin-bottom: 18px;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(90deg, #4f46e5, #6d63ff);
+            padding: 14px 20px;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-content {
+            padding: 20px;
+            display: none;
+        }
+
+        .question-box {
+            background: #1e1e1e;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            border: 1px solid #333;
+        }
+
+        .q-label {
+            color: #6d63ff;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .answer {
+            margin-bottom: 12px;
+            padding-left: 10px;
+            border-left: 3px solid #4f46e5;
+        }
+
+        .evaluation-box {
+            background: #111;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid #222;
+        }
+
+        .eval-item {
+            margin-bottom: 8px;
+        }
+
+        .score {
+            font-weight: bold;
+            color: #4f46e5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <div class="nav-item" onclick="location.href='/admin-dashboard'">📊 Dashboard</div>
+        <div class="nav-item" onclick="location.href='/admin-students.html'">🎓 Students</div>
+        <div class="nav-item active">📄 Report</div>
+        <div class="nav-item" onclick="logout()">🚪 Logout</div>
+    </div>
+
+    <div class="main">
+
+        <div class="title">Interview Report</div>
+        <div class="subtitle">AI-generated evaluation + full Q&A</div>
+
+        <h3>Final Report Summary</h3>
+        <div id="reportSections"></div>
+
+        <h3 style="margin-top: 30px;">Complete Q&A</h3>
+        <div id="qaContainer"></div>
+
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        if (!id) {
+            alert("Invalid report ID");
+        }
+
+        async function loadReport() {
+            const res = await fetch(`/api/admin/interview?id=${id}`);
+            const data = await res.json();
+
+            if (!data.success) {
+                alert("Failed to load report");
+                return;
+            }
+
+            buildSections(data.report);
+            buildQA(data.conversation, data.evaluations);
+        }
+
+        function buildSections(report) {
+            const container = document.getElementById("reportSections");
+            container.innerHTML = "";
+
+            for (const key in report) {
+                const section = document.createElement("div");
+                section.className = "section";
+
+                const header = document.createElement("div");
+                header.className = "section-header";
+                header.innerHTML = `${key.toUpperCase()} <span>▼</span>`;
+                header.onclick = () => {
+                    const c = section.querySelector(".section-content");
+                    c.style.display = c.style.display === "block" ? "none" : "block";
+                };
+
+                const content = document.createElement("div");
+                content.className = "section-content";
+                content.innerHTML = formatSection(report[key]);
+
+
+                section.appendChild(header);
+                section.appendChild(content);
+                container.appendChild(section);
+            }
+        }
+
+        function buildQA(conversation, evaluations) {
+            const container = document.getElementById("qaContainer");
+            container.innerHTML = "";
+
+            let qIndex = 0;
+            let eIndex = 0;
+
+            for (let i = 0; i < conversation.length; i++) {
+                const msg = conversation[i];
+
+                if (msg.role === "assistant") {
+                    qIndex++;
+
+                    const qBox = document.createElement("div");
+                    qBox.className = "question-box";
+
+                    qBox.innerHTML = `
+                        <div class="q-label">Question ${qIndex}</div>
+                        <div>${msg.content}</div>
+                    `;
+
+                    container.appendChild(qBox);
+                }
+
+                if (msg.role === "user") {
+                    const answer = document.createElement("div");
+                    answer.className = "answer";
+                    answer.innerHTML = `<b>Answer:</b> ${msg.content}`;
+
+                    container.lastChild.appendChild(answer);
+
+                    const evalBox = document.createElement("div");
+                    evalBox.className = "evaluation-box";
+
+                    const ev = evaluations[eIndex++] || {};
+
+                    let evalHTML = "";
+                    if (ev.scores) {
+                        for (const key in ev.scores) {
+                            evalHTML += `
+                                <div class="eval-item">
+                                    <b>${key.replace(/_/g, " ").toUpperCase()}:</b>
+                                    <span class="score">${ev.scores[key].score}</span>
+                                    <div style="opacity:0.7">${ev.scores[key].evidence}</div>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    evalBox.innerHTML = evalHTML;
+                    container.lastChild.appendChild(evalBox);
+                }
+            }
+        }
+
+        function logout() {
+            fetch("/api/admin/logout", { method: "POST" })
+                .then(() => window.location.href = "/");
+        }
+        function formatSection(section) {
+    let html = "";
+
+    for (const key in section) {
+        let label = key.replace(/_/g, " ").toUpperCase();
+
+        html += `<div style="margin-bottom:15px;">
+                    <b style="color:#6d63ff">${label}:</b><br>`;
+
+
+        // Case 1 — simple string
+        if (typeof section[key] === "string") {
+            html += `<div style="margin-top:5px;">${section[key]}</div>`;
+        }
+
+        // Case 2 — list of objects (green_flags, red_flags)
+        else if (Array.isArray(section[key])) {
+            section[key].forEach(item => {
+                if (typeof item === "string") {
+                    html += `• ${item}<br>`;
+                } else {
+                    html += `• ${item.pattern}<br>
+                             <span style="opacity:0.7; margin-left:12px;">Example: "${item.quote}"</span><br>`;
+                }
+            });
+        }
+
+        // Case 3 — generic object fallback
+        else if (typeof section[key] === "object") {
+            for (const sub in section[key]) {
+                html += `• <b>${sub}:</b> ${section[key][sub]}<br>`;
+            }
+        }
+
+        html += `</div>`;
+    }
+
+    return html;
+}
+
+
+        loadReport();
+    </script>
+
+</body>
+</html>
