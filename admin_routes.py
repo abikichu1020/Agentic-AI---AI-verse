@@ -7,7 +7,7 @@ from pymongo import MongoClient
 admin_bp = Blueprint("admin", __name__)
 
 # Mongo Connection
-MONGO_URI = "mongodb+srv://i103:aishu@cluster0.zxk94yv.mongodb.net/?appName=Cluster0"
+MONGO_URI = ""
 client = MongoClient(MONGO_URI)
 db = client["interview_system"]
 
@@ -157,3 +157,4 @@ def admin_stats():
         "top_students": top_students,
         "weak_students": weak_students
     })
+
